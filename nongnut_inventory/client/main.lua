@@ -30,6 +30,31 @@ local function postMessage(action, data)
     SendNUIMessage(data)
 end
 
+local function normalizeCategories(categories)
+    local normalizedCategories = {}
+    for categoryIndex, categoryData in pairs(categories or {}) do
+        local normalizedCategory = {}
+        for key, value in pairs(categoryData or {}) do
+            if key ~= 'items' then
+                normalizedCategory[key] = value
+            end
+        end
+
+        local normalizedItems = {}
+        for itemKey, itemValue in pairs(categoryData.items or {}) do
+            if type(itemKey) == 'number' then
+                normalizedItems[itemValue] = true
+            else
+                normalizedItems[itemKey] = itemValue
+            end
+        end
+        normalizedCategory.items = normalizedItems
+        normalizedCategories[categoryIndex] = normalizedCategory
+    end
+
+    return normalizedCategories
+end
+
 local function closeHotbar()
     hotbarTimer = nil
     postMessage('closeHotbar')
@@ -591,12 +616,13 @@ local function initializeInventory()
     end)
     -- FASHION
 
+    local categories = normalizeCategories(Config.Categories)
     postMessage('setupInventory', {
         items = items,
         hiddenItems = hiddenItemCache,
         itemOrders = Config.ItemOrders,
         itemDescriptions = Config.ItemDescriptions,
-        categories = Config.Categories,
+        categories = categories,
         favorites = json.decode(GetResourceKvpString('inventory_favorites') or '{}'),
         fastSlots = fastSlots,
         playerId = GetPlayerServerId(PlayerId()),
