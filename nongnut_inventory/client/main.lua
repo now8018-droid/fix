@@ -542,7 +542,7 @@ local function initializeInventory()
         itemCount[account.name] = account.money > 0 and account.money or nil
         itemLabel[account.name] = account.label
     end
-    local weapons = ESX.GetWeaponList()
+    local weapons = ESX.GetWeaponList() or {}
     for i = 1, #weapons do
         local weapon = weapons[i]
         items[weapon.name] = {
@@ -559,10 +559,23 @@ local function initializeInventory()
     local loadout = playerData.loadout or {}
     for i = 1, #loadout do
         local weapon = loadout[i]
-        if items[weapon.name] then
-            local ammo = GetAmmoInPedWeapon(PlayerPedId(), joaat(weapon.name))
-            items[weapon.name].count = ammo
-            playerLoadout[weapon.name] = ammo
+        if not items[weapon.name] then
+            items[weapon.name] = {
+                count = json.null,
+                label = weapon.label or itemLabel[weapon.name] or weapon.name,
+                usable = actionMap.use[weapon.name] or actionMap.use['item_weapon'],
+                giveable = actionMap.give[weapon.name] or actionMap.give['item_weapon'],
+                droppable = actionMap.drop[weapon.name] or actionMap.drop['item_weapon'],
+                type = 'item_weapon',
+                hideCount = GetWeaponDamageType(joaat(weapon.name)) == 2 and true or (hideCountCache[weapon.name] and true or nil)
+            }
+        end
+
+        local ammo = GetAmmoInPedWeapon(PlayerPedId(), joaat(weapon.name))
+        items[weapon.name].count = ammo
+        playerLoadout[weapon.name] = ammo
+        if weapon.label then
+            itemLabel[weapon.name] = weapon.label
         end
     end
     local fastSlots = {}
