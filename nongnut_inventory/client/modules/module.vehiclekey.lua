@@ -13,14 +13,43 @@ local function resolveVehiclePlate(vehicleKey, vehicleData)
     return nil
 end
 
-RegisterNetEvent('nongnut_inventory:initialized', function()
-    pcall(function()
-        local vehicles = exports['nongnut_garage']:getVehicles()
-        for vehicleKey, vehicleData in pairs(vehicles or {}) do
-            local plate = resolveVehiclePlate(vehicleKey, vehicleData)
-            if plate then
+local syncedVehicleKeys = {}
+
+local function syncVehicleKeys()
+    local ok, vehicles = pcall(function()
+        return exports['nongnut_garage']:getVehicles()
+    end)
+    if not ok or type(vehicles) ~= 'table' then
+        return false
+    end
+
+    local hasVehicle = false
+    for vehicleKey, vehicleData in pairs(vehicles) do
+        local plate = resolveVehiclePlate(vehicleKey, vehicleData)
+        if plate then
+            hasVehicle = true
+            if not syncedVehicleKeys[plate] then
+                syncedVehicleKeys[plate] = true
                 exports[GetCurrentResourceName()]:addAddonItem('item_vehiclekey', plate)
             end
+        end
+    end
+
+    return hasVehicle
+end
+
+RegisterNetEvent('nongnut_inventory:initialized', function()
+    CreateThread(function()
+        for _ = 1, 30 do
+            if syncVehicleKeys() then
+                break
+            end
+            Wait(1000)
+        end
+
+        while true do
+            Wait(60000)
+            syncVehicleKeys()
         end
     end)
 end)
