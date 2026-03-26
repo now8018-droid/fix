@@ -68,6 +68,10 @@ RegisterNetEvent('nongnut_inventory:player:giveVehicleKey', function(targetId, p
     if targetXPlayer then
         TriggerClientEvent('nongnut_inventory:addAddonItem', targetId, 'item_vehiclekey', plate, plate)
         TriggerClientEvent('nongnut_inventory:removeAddonItem', source, 'item_vehiclekey', plate)
+        pcall(function()
+            exports['xbb-vehiclekey']:addKey(targetId, plate)
+            exports['xbb-vehiclekey']:removeKey(source, plate)
+        end)
     end
 end)
 

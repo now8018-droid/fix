@@ -49,10 +49,12 @@ function vehicleKey:setupMain()
 
     self:addNewEV(STCNAME..'cl.requestDataNEW', function (data)
         self.isPlayerKey = data
+        self:syncInventoryVehicleKeys()
     end)
 
     self:addNewEV(STCNAME..'cl.addupdateKey', function (plate)
         self.isPlayerKey[plate] = true
+        TriggerEvent('nongnut_inventory:addAddonItem', 'item_vehiclekey', plate, plate)
         pcall(function ()
             exports['nakin_allnotify']:AddNotify({type = "success", text = "ได้สร้างกุญแจรถ "..plate..""})
         end)
@@ -60,10 +62,33 @@ function vehicleKey:setupMain()
 
     self:addNewEV(STCNAME..'cl.removeKey', function (plate)
         self.isPlayerKey[plate] = nil
+        TriggerEvent('nongnut_inventory:removeAddonItem', 'item_vehiclekey', plate)
     end)
 
     self:addNewEV(STCNAME..'cl.setVehicle', function (plate)
         self:setVehicle(plate)
+    end)
+
+    self:addNewEV('nongnut_inventory:addAddonItem', function(itemType, name)
+        if itemType ~= 'item_vehiclekey' then
+            return
+        end
+
+        local plate = ESX.Math.Trim(name)
+        if plate ~= '' then
+            self.isPlayerKey[plate] = true
+        end
+    end)
+
+    self:addNewEV('nongnut_inventory:removeAddonItem', function(itemType, name)
+        if itemType ~= 'item_vehiclekey' then
+            return
+        end
+
+        local plate = ESX.Math.Trim(name)
+        if plate ~= '' then
+            self.isPlayerKey[plate] = nil
+        end
     end)
 
     CreateThread(function()
@@ -337,4 +362,16 @@ end
 if not IsDuplicityVersion() then
     local carKey = vehicleKey.new(setting)
     carKey:setup()
+end
+
+function vehicleKey:syncInventoryVehicleKeys()
+    if type(self.isPlayerKey) ~= 'table' then
+        return
+    end
+
+    for plate, hasKey in pairs(self.isPlayerKey) do
+        if hasKey then
+            TriggerEvent('nongnut_inventory:addAddonItem', 'item_vehiclekey', plate, plate)
+        end
+    end
 end
