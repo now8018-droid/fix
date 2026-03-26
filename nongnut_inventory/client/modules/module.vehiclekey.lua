@@ -19,7 +19,7 @@ RegisterNetEvent('nongnut_inventory:initialized', function()
         for vehicleKey, vehicleData in pairs(vehicles or {}) do
             local plate = resolveVehiclePlate(vehicleKey, vehicleData)
             if plate then
-                exports['nongnut_inventory']:addAddonItem('item_vehiclekey', plate)
+                exports[GetCurrentResourceName()]:addAddonItem('item_vehiclekey', plate)
             end
         end
     end)

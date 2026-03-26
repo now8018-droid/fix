@@ -12,19 +12,19 @@ RegisterNetEvent('nongnut_inventory:accessoriesData', function(data)
         local itemType = v.type:gsub('player_', 'item_')
         local itemName = v.label
         local itemSkin = v.skin
-        exports['nongnut_inventory']:addAddonItem(itemType, itemName, itemName)
-        exports['nongnut_inventory']:setAccessoryData(itemType..'_'..itemName, json.decode(itemSkin))
+        exports[GetCurrentResourceName()]:addAddonItem(itemType, itemName, itemName)
+        exports[GetCurrentResourceName()]:setAccessoryData(itemType..'_'..itemName, json.decode(itemSkin))
     end
 end)
 
 RegisterNetEvent('nongnut_inventory:addAccessory', function(itemType, itemName, skin)
-    exports['nongnut_inventory']:addAddonItem(itemType, itemName, itemName)
-    exports['nongnut_inventory']:setAccessoryData(itemType..'_'..itemName, json.decode(skin))
+    exports[GetCurrentResourceName()]:addAddonItem(itemType, itemName, itemName)
+    exports[GetCurrentResourceName()]:setAccessoryData(itemType..'_'..itemName, json.decode(skin))
 end)
 
 RegisterNetEvent('nongnut_inventory:removeAccessory', function(itemType, itemName)
-    exports['nongnut_inventory']:removeAddonItem(itemType, itemName)
-    exports['nongnut_inventory']:setAccessoryData(itemType..'_'..itemName, nil)
+    exports[GetCurrentResourceName()]:removeAddonItem(itemType, itemName)
+    exports[GetCurrentResourceName()]:setAccessoryData(itemType..'_'..itemName, nil)
 end)
 
 function Function.UseAccessory(itemType, itemName, itemData)

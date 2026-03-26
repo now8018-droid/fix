@@ -3,9 +3,9 @@ local function updateData(data)
     for plate, timestamp in pairs(data) do
         local itemName = 'item_vehiclekey_' .. plate
         tempData[itemName] = timestamp
-        exports['nongnut_inventory']:addAddonItem('item_vehiclekey', plate)
+        exports[GetCurrentResourceName()]:addAddonItem('item_vehiclekey', plate)
     end
-    exports['nongnut_inventory']:postMessage('setLeasedData', {
+    exports[GetCurrentResourceName()]:postMessage('setLeasedData', {
         leasedData = tempData
     })
 end

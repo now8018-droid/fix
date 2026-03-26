@@ -18,7 +18,7 @@ local function updateUI()
     end)
     local currentTime = onlineTime + (GetNetworkTime() - serverTime)
     if getReward >= maxHour then
-        exports['nongnut_inventory']:postMessage('updateOnlineRewards', {
+        exports[GetCurrentResourceName()]:postMessage('updateOnlineRewards', {
             seconds = math.floor(currentTime / 1000),
             index = #rewardCache
         })
@@ -37,7 +37,7 @@ local function updateUI()
             break
         end
     end
-    exports['nongnut_inventory']:postMessage('updateOnlineRewards', {
+    exports[GetCurrentResourceName()]:postMessage('updateOnlineRewards', {
         seconds = math.floor(remainingTime / 1000),
         index = currentRewardIndex
     })
@@ -67,7 +67,7 @@ RegisterNetEvent('nongnut_inventory:initialized', function()
         }
     end
     maxHour = rewardCache[#rewardCache].time
-    exports['nongnut_inventory']:postMessage('setupOnlineRewards', {
+    exports[GetCurrentResourceName()]:postMessage('setupOnlineRewards', {
         onlineRewards = {
             seconds = 0,
             rewards = rewards,

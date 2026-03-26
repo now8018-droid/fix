@@ -139,7 +139,7 @@ RegisterNetEvent('nongnut_inventory:initialized', function()
 		end
     end)
     ESX.RegisterUsableItem('ammo_revolver', function()
-        if not revolverCooldown and getItem('ammo_revolver').count > 0 and not exports['nongnut_inventory']:isUseWeaponDelay() then
+        if not revolverCooldown and getItem('ammo_revolver').count > 0 and not exports[GetCurrentResourceName()]:isUseWeaponDelay() then
             local playerPed = PlayerPedId()
             local currentWeapon = GetSelectedPedWeapon(playerPed)
             local ammoData = revolverAmmo[currentWeapon]
