@@ -44,7 +44,7 @@ RegisterNetEvent('nongnut_inventory:initialized', function()
                         }
                     end
                 end
-                exports['nongnut_inventory']:setupSecondaryInventory({
+                exports[GetCurrentResourceName()]:setupSecondaryInventory({
                     type = 'trunk',
                     name = plate,
                     rightTitle = 'TRUNK',
@@ -64,8 +64,8 @@ RegisterNetEvent('nongnut_inventory:initialized', function()
         ESX.TriggerServerCallback('nongnut_inventory:trunk:putItem', function(success, count, weight)
             local count = count or 0
             if success then
-                exports['nongnut_inventory']:changeSecondaryItem(itemName, itemType, count)
-                exports['nongnut_inventory']:changeSecondaryData({
+                exports[GetCurrentResourceName()]:changeSecondaryItem(itemName, itemType, count)
+                exports[GetCurrentResourceName()]:changeSecondaryData({
                     rightWeight = weight
                 })
                 TriggerEvent('nongnut_inventory:playAnim', 'trunk')
@@ -78,11 +78,11 @@ RegisterNetEvent('nongnut_inventory:initialized', function()
             local count = count or 0
             if success then
                 if count > 0 then
-                    exports['nongnut_inventory']:changeSecondaryItem(itemName, itemType, count)
+                    exports[GetCurrentResourceName()]:changeSecondaryItem(itemName, itemType, count)
                 else
-                    exports['nongnut_inventory']:removeSecondaryItem(itemName)
+                    exports[GetCurrentResourceName()]:removeSecondaryItem(itemName)
                 end
-                exports['nongnut_inventory']:changeSecondaryData({
+                exports[GetCurrentResourceName()]:changeSecondaryData({
                     rightWeight = weight
                 })
                 TriggerEvent('nongnut_inventory:playAnim', 'trunk')
@@ -137,7 +137,7 @@ RegisterNetEvent('nongnut_inventory:initialized', function()
                         local playerCoords = GetEntityCoords(playerPed)
                         local vehicleCoords = GetEntityCoords(vehicle)
                         if #(playerCoords - vehicleCoords) > 5 or not DoesEntityExist(vehicle) then
-                            exports['nongnut_inventory']:closeInventory()
+                            exports[GetCurrentResourceName()]:closeInventory()
                         end
                         Wait(500)
                     until not trunkOpen

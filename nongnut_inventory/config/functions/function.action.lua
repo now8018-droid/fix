@@ -50,9 +50,9 @@ end
 function Function.DragItem(action, secondaryType, secondaryName, itemName, itemType, actionCount, itemUniqueKey)
     if action == 'put' then
         if secondaryType == 'vault' then
-            exports['nongnut_inventory']:putItemToVault(secondaryName, itemName, itemType, actionCount)
+            exports[GetCurrentResourceName()]:putItemToVault(secondaryName, itemName, itemType, actionCount)
         elseif secondaryType == 'trunk' then
-            exports['nongnut_inventory']:putItemToTrunk(secondaryName, itemName, itemType, actionCount)
+            exports[GetCurrentResourceName()]:putItemToTrunk(secondaryName, itemName, itemType, actionCount)
         elseif secondaryType == 'player' then
             TriggerServerEvent('nongnut_inventory:player:putItem', secondaryName, itemName, itemType, actionCount, itemKey)
         elseif secondaryType == 'allitems' then
@@ -71,9 +71,9 @@ function Function.DragItem(action, secondaryType, secondaryName, itemName, itemT
             return
         end
         if secondaryType == 'vault' then
-            exports['nongnut_inventory']:takeItemFromVault(secondaryName, itemName, itemType, actionCount, itemUniqueKey)
+            exports[GetCurrentResourceName()]:takeItemFromVault(secondaryName, itemName, itemType, actionCount, itemUniqueKey)
         elseif secondaryType == 'trunk' then
-            exports['nongnut_inventory']:takeItemFromTrunk(secondaryName, itemName, itemType, actionCount, itemUniqueKey)
+            exports[GetCurrentResourceName()]:takeItemFromTrunk(secondaryName, itemName, itemType, actionCount, itemUniqueKey)
         elseif secondaryType == 'player' then
             TriggerServerEvent('nongnut_inventory:player:takeItem', secondaryName, itemName, itemType, actionCount, itemUniqueKey)
         elseif secondaryType == 'allitems' then

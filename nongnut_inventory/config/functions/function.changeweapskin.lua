@@ -61,18 +61,18 @@ RegisterNetEvent('nongnut_inventory:initialized', function()
                 local skin = weaponSkinConfig[j]
                 local skinName = skin.name
                 if HasPedGotWeaponComponent(PlayerPedId(), joaat(weaponName), joaat(skinName)) then
-                    exports['nongnut_inventory']:setImageOverride(weaponName, skinName .. '.png')
+                    exports[GetCurrentResourceName()]:setImageOverride(weaponName, skinName .. '.png')
                 end
             end
         end
     end
 
     RegisterNetEvent('esx:addWeaponComponent', function(weaponName, weaponComponent)
-        exports['nongnut_inventory']:setImageOverride(weaponName, weaponComponent .. '.png')
+        exports[GetCurrentResourceName()]:setImageOverride(weaponName, weaponComponent .. '.png')
     end)
     
     RegisterNetEvent('esx:removeWeaponComponent', function(weaponName, weaponComponent, silentRemove)
         if silentRemove then return end
-        exports['nongnut_inventory']:removeImageOverride(weaponName)
+        exports[GetCurrentResourceName()]:removeImageOverride(weaponName)
     end)
 end)

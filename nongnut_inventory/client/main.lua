@@ -30,6 +30,31 @@ local function postMessage(action, data)
     SendNUIMessage(data)
 end
 
+local function normalizeCategories(categories)
+    local normalizedCategories = {}
+    for categoryIndex, categoryData in pairs(categories or {}) do
+        local normalizedCategory = {}
+        for key, value in pairs(categoryData or {}) do
+            if key ~= 'items' then
+                normalizedCategory[key] = value
+            end
+        end
+
+        local normalizedItems = {}
+        for itemKey, itemValue in pairs(categoryData.items or {}) do
+            if type(itemKey) == 'number' then
+                normalizedItems[itemValue] = true
+            else
+                normalizedItems[itemKey] = itemValue
+            end
+        end
+        normalizedCategory.items = normalizedItems
+        normalizedCategories[categoryIndex] = normalizedCategory
+    end
+
+    return normalizedCategories
+end
+
 local function closeHotbar()
     hotbarTimer = nil
     postMessage('closeHotbar')
@@ -517,7 +542,7 @@ local function initializeInventory()
         itemCount[account.name] = account.money > 0 and account.money or nil
         itemLabel[account.name] = account.label
     end
-    local weapons = ESX.GetWeaponList()
+    local weapons = ESX.GetWeaponList() or {}
     for i = 1, #weapons do
         local weapon = weapons[i]
         items[weapon.name] = {
@@ -534,10 +559,23 @@ local function initializeInventory()
     local loadout = playerData.loadout or {}
     for i = 1, #loadout do
         local weapon = loadout[i]
-        if items[weapon.name] then
-            local ammo = GetAmmoInPedWeapon(PlayerPedId(), joaat(weapon.name))
-            items[weapon.name].count = ammo
-            playerLoadout[weapon.name] = ammo
+        if not items[weapon.name] then
+            items[weapon.name] = {
+                count = json.null,
+                label = weapon.label or itemLabel[weapon.name] or weapon.name,
+                usable = actionMap.use[weapon.name] or actionMap.use['item_weapon'],
+                giveable = actionMap.give[weapon.name] or actionMap.give['item_weapon'],
+                droppable = actionMap.drop[weapon.name] or actionMap.drop['item_weapon'],
+                type = 'item_weapon',
+                hideCount = GetWeaponDamageType(joaat(weapon.name)) == 2 and true or (hideCountCache[weapon.name] and true or nil)
+            }
+        end
+
+        local ammo = GetAmmoInPedWeapon(PlayerPedId(), joaat(weapon.name))
+        items[weapon.name].count = ammo
+        playerLoadout[weapon.name] = ammo
+        if weapon.label then
+            itemLabel[weapon.name] = weapon.label
         end
     end
     local fastSlots = {}
@@ -591,12 +629,13 @@ local function initializeInventory()
     end)
     -- FASHION
 
+    local categories = normalizeCategories(Config.Categories)
     postMessage('setupInventory', {
         items = items,
         hiddenItems = hiddenItemCache,
         itemOrders = Config.ItemOrders,
         itemDescriptions = Config.ItemDescriptions,
-        categories = Config.Categories,
+        categories = categories,
         favorites = json.decode(GetResourceKvpString('inventory_favorites') or '{}'),
         fastSlots = fastSlots,
         playerId = GetPlayerServerId(PlayerId()),

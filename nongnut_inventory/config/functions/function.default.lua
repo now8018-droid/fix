@@ -19,7 +19,7 @@ local AccessoryData = {}
 
 function Function.UseItem(item)
     if CloseOnUse ~= (CloseOnUseList[item?.name] ~= nil) then
-        exports['nongnut_inventory']:closeInventory()
+        exports[GetCurrentResourceName()]:closeInventory()
     end
     local itemName = item?.name
     local itemType = item?.type

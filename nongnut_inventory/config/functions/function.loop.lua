@@ -1,6 +1,6 @@
 function Function.Loop()
     local ESX = exports['es_extended']:getSharedObject()
-    local nongnut_inventory = exports['nongnut_inventory']
+    local nongnut_inventory = exports[GetCurrentResourceName()]
     local playerPed = PlayerPedId()
     CreateThread(function()
         -- local _BlockWeaponWheelThisFrame = BlockWeaponWheelThisFrame

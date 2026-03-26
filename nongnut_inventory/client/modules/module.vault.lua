@@ -27,7 +27,7 @@ function putItem(vaultType, itemName, itemType, itemCount)
     ESX.TriggerServerCallback('nongnut_inventory:vault:putItem', function(success, count, ukey)
         local count = count or 0
         if success then
-            exports['nongnut_inventory']:changeSecondaryItem(itemName, itemType, count, ukey)
+            exports[GetCurrentResourceName()]:changeSecondaryItem(itemName, itemType, count, ukey)
         end
     end, vaultType, itemName, itemType, itemCount)
 end
@@ -37,9 +37,9 @@ function takeItem(vaultType, itemName, itemType, itemCount, itemUniqueKey)
         local count = count or 0
         if success then
             if count > 0 then
-                exports['nongnut_inventory']:changeSecondaryItem(itemName, itemType, count, ukey)
+                exports[GetCurrentResourceName()]:changeSecondaryItem(itemName, itemType, count, ukey)
             else
-                exports['nongnut_inventory']:removeSecondaryItem(itemName, ukey)
+                exports[GetCurrentResourceName()]:removeSecondaryItem(itemName, ukey)
             end
         end
     end, vaultType, itemName, itemType, itemCount, itemUniqueKey)
@@ -174,7 +174,7 @@ local function checkCoords(coords, radius)
         local playerPed = PlayerPedId()
         local playerCoords = GetEntityCoords(playerPed)
         if #(playerCoords - coords) > radius then
-            exports['nongnut_inventory']:closeInventory()
+            exports[GetCurrentResourceName()]:closeInventory()
         end
         Wait(500)
     until not vaultOpen
@@ -272,7 +272,7 @@ local function openVault(eventName, v, ...)
             -- end
             -- DisableItems(mergedTable, gang and true or false)
             -- OpenSecondInventory()
-            exports['nongnut_inventory']:setupSecondaryInventory({
+            exports[GetCurrentResourceName()]:setupSecondaryInventory({
                 type = 'vault',
                 name = gang and 'gang' or v.job or nil,
                 rightTitle = 'VAULT',
@@ -301,7 +301,7 @@ local function openVault(eventName, v, ...)
                         label = itemLabel[entry[3]] or entry[3]
                     }
                 end
-                exports['nongnut_inventory']:postMessage('setHistory', {
+                exports[GetCurrentResourceName()]:postMessage('setHistory', {
                     history = tempHistory
                 })
             end
@@ -310,7 +310,7 @@ local function openVault(eventName, v, ...)
 end
 
 local function openVaultSelector(items, index)
-    exports['nongnut_inventory']:postMessage('setVaultSelector', {
+    exports[GetCurrentResourceName()]:postMessage('setVaultSelector', {
         items = items,
         index = index
     })
@@ -323,7 +323,7 @@ RegisterNUICallback('selectVault', function(data, cb)
     local item = data.item
     local config_index = data.cfgIndex
     local v = vaultCoords[config_index]
-    exports['nongnut_inventory']:postMessage('setVaultSelector', {})
+    exports[GetCurrentResourceName()]:postMessage('setVaultSelector', {})
     SetNuiFocus(false, false)
     if item == 'gangcard' then
         local myGang = exports.gangsystem:getGangData()
