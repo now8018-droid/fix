@@ -66,6 +66,28 @@ function vehicleKey:setupMain()
         self:setVehicle(plate)
     end)
 
+    self:addNewEV('nongnut_inventory:addAddonItem', function(itemType, name)
+        if itemType ~= 'item_vehiclekey' then
+            return
+        end
+
+        local plate = ESX.Math.Trim(name)
+        if plate ~= '' then
+            self.isPlayerKey[plate] = true
+        end
+    end)
+
+    self:addNewEV('nongnut_inventory:removeAddonItem', function(itemType, name)
+        if itemType ~= 'item_vehiclekey' then
+            return
+        end
+
+        local plate = ESX.Math.Trim(name)
+        if plate ~= '' then
+            self.isPlayerKey[plate] = nil
+        end
+    end)
+
     CreateThread(function()
         while true do
             local isinvehicle = IsPedInAnyVehicle(self.PlayerPedId, true)
